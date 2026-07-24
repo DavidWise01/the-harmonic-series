@@ -1,0 +1,180 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="David Lee Wise / ROOT0 / TriPod LLC">
+<title>THE HARMONIC SERIES · BAND CAMP · UD0</title>
+<style>
+*{box-sizing:border-box}
+:root{--music:#e85aa0;--music2:#c23d80;--gold:#e0a52a;--gold2:#b07d16;--wax:#2a2028;--dim:#7a6a74;
+  --grn:#2e9e6a;--blue:#5a7fb0;--panel:rgba(255,252,254,.72);--edge:rgba(232,90,160,.26);--edge2:rgba(232,90,160,.12)}
+html,body{margin:0;height:100%}
+body{background:#f6eef2;color:var(--wax);font:15px/1.55 'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+#bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block}
+.desk{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:24px 16px 56px}
+.dtag{font:600 11px/1 ui-monospace,'Cascadia Code','Segoe UI Mono',monospace;letter-spacing:.30em;text-transform:uppercase;color:var(--music2)}
+.dtag b{color:var(--music)}
+h1{margin:.35em 0 .1em;font-size:clamp(26px,4.6vw,42px);font-weight:800;letter-spacing:.01em;color:#241820}
+.sub{color:var(--dim);max-width:66ch;margin:.2em 0 0}
+.drag{display:inline-block;margin-left:10px;font:700 10px/1 ui-monospace,monospace;letter-spacing:.14em;color:var(--gold2);border:1px solid var(--gold);border-radius:999px;padding:4px 9px;vertical-align:middle;white-space:nowrap}
+.tier{display:inline-flex;gap:6px;align-items:center;margin-top:14px;font:600 11px/1 ui-monospace,monospace;letter-spacing:.14em}
+.chip{padding:5px 10px;border-radius:999px;border:1px solid var(--edge);background:var(--panel)}
+.chip.lit{color:var(--grn);border-color:rgba(46,158,106,.4)}
+.chip.amb{color:var(--gold2);border-color:rgba(176,125,22,.5)}
+.card{margin-top:20px;background:var(--panel);border:1px solid var(--edge);border-radius:16px;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);box-shadow:0 14px 44px rgba(150,40,95,.14)}
+.stagewrap{padding:14px}
+#stage{width:100%;height:auto;display:block;border-radius:10px;background:linear-gradient(180deg,rgba(42,32,40,.96),rgba(30,22,30,.98));border:1px solid rgba(232,90,160,.3);box-shadow:0 0 26px rgba(232,90,160,.12) inset;touch-action:none;cursor:pointer}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:0 14px 14px}
+.btn{cursor:pointer;border:1px solid var(--edge);background:#fffbfd;color:var(--wax);padding:9px 14px;border-radius:10px;font:600 13px/1 'Segoe UI',system-ui;letter-spacing:.02em;transition:.15s}
+.btn:hover{border-color:var(--music);box-shadow:0 0 14px rgba(232,90,160,.24)}
+.btn.on{background:linear-gradient(180deg,#f06aae,#d24a8e);border-color:#d24a8e;color:#fff}
+.btn.play{background:linear-gradient(180deg,#eeb23a,#d0901c);border-color:#c2820f;color:#3a2a08;font-weight:700}
+.btn.play:hover{box-shadow:0 0 16px rgba(224,165,42,.45)}
+.rng{display:flex;align-items:center;gap:8px;font:600 12px ui-monospace,monospace;color:var(--dim);background:#fffbfd;border:1px solid var(--edge);border-radius:10px;padding:6px 12px}
+.rng b{color:var(--music2);min-width:2.4em;text-align:right;display:inline-block}
+input[type=range]{accent-color:var(--music);width:104px}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--edge2);border-top:1px solid var(--edge);border-radius:0 0 16px 16px;overflow:hidden}
+.ro{background:var(--panel);padding:11px 14px}
+.ro .k{font:600 10px ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.ro .v{font:700 19px ui-monospace,monospace;margin-top:3px;color:var(--wax)}
+.ro .v.g{color:var(--grn)} .ro .v.r{color:var(--music2)} .ro .v.a{color:var(--gold2)} .ro .v.c{color:var(--blue)}
+.honesty{margin-top:22px;display:grid;gap:10px}
+.hz{background:var(--panel);border:1px solid var(--edge);border-left-width:3px;border-radius:10px;padding:12px 15px}
+.hz.lit{border-left-color:var(--grn)} .hz.amb{border-left-color:var(--gold)}
+.hz h4{margin:0 0 4px;font:700 11px ui-monospace,monospace;letter-spacing:.16em}
+.hz.lit h4{color:var(--grn)} .hz.amb h4{color:var(--gold2)}
+.hz p{margin:0;color:#3c2e37;font-size:13.5px}
+.law{margin-top:16px;text-align:center;color:var(--dim);font:italic 500 13px/1.5 Georgia,serif}
+.sig{margin-top:26px;text-align:center;color:var(--dim);font:600 11px ui-monospace,monospace;letter-spacing:.14em}
+.sig b{color:var(--wax)}
+#fail{display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:99;background:#2a0d1a;border:1px solid var(--music);color:#ffd7ea;padding:12px;border-radius:8px;font:12px ui-monospace,monospace;white-space:pre-wrap}
+</style></head><body>
+<canvas id="bg"></canvas>
+<div class="desk">
+  <div class="dtag">♫ <b>THIS ONE TIME AT BAND CAMP</b> · music as lineage · the family tree of sound</div>
+  <h1>THE HARMONIC SERIES <span class="drag">♪ PLAY · DRAG · TAP</span></h1>
+  <p class="sub">Pluck one string and you don't hear one note — you hear a whole ladder of them, the overtones, stacked in whole-number ratios. Their recipe is the instrument's <i>voice</i>. <b>Drag</b> the bars to set each overtone, <b>tap PLAY</b> to hear the timbre you built, and add sines until a pure tone turns into a buzzing saw.</p>
+  <div class="tier"><span class="chip lit">◆ LIT</span><span class="chip amb">▲ AMBER</span></div>
+  <div class="card">
+    <div class="stagewrap"><canvas id="stage" width="900" height="440"></canvas></div>
+    <div class="controls"><button class="btn play" id="play">▶ PLAY</button><button class="btn" id="saw">◭ sawtooth</button><button class="btn" id="sq">◰ square</button><button class="btn" id="clar">◠ clarinet</button><button class="btn" id="pure">● pure tone</button><label class="rng">fundamental <input type="range" id="f0" min="55" max="220" value="110" step="1"><b id="f0v">110</b>Hz</label></div>
+    <div class="readout"><div class="ro"><div class="k">fundamental</div><div class="v" id="roF0">—</div></div><div class="ro"><div class="k">partials on</div><div class="v" id="roN">—</div></div><div class="ro"><div class="k">brightness</div><div class="v" id="roBright">—</div></div><div class="ro"><div class="k">the voice</div><div class="v" id="roWave">—</div></div></div>
+  </div>
+  <div class="honesty">
+    <div class="hz lit"><h4>◆ LIT — verified / checkable</h4><p>This is <b>additive synthesis</b> on the real harmonic series: partial n has frequency n × the fundamental (2f, 3f, 4f…), and the drawn bars are their amplitudes. Tap PLAY and the page sums that many sine oscillators live through the Web Audio API — no samples, no recordings. The presets are the exact classical spectra: <b>sawtooth</b> = every harmonic at 1/n, <b>square/clarinet</b> = odd harmonics only at 1/n, <b>pure</b> = the fundamental alone. Fourier's theorem made audible: timbre <i>is</i> the amplitude of the overtones, and you can hear a pure tone become a buzz as you add them.</p></div>
+    <div class="hz amb"><h4>▲ AMBER — the figure</h4><p>Real instrument tones also have inharmonic partials, noise, and time-varying spectra (the attack of a real string isn't a steady sum of sines); this is the idealised harmonic model with a fixed spectrum. The synthesis itself — n·f partials at the amplitudes you set — is exact and generated live, not a recording.</p></div>
+  </div>
+  <div class="law">BAND CAMP: every song is somebody's child — play the ancestors so they are not forgotten. &nbsp;— <b>THE GRIOT</b></div>
+  <div class="sig">David Lee Wise / ROOT0 / TriPod LLC &nbsp;·&nbsp; kept by <b>THE GRIOT</b></div>
+</div>
+<div id="fail"></div>
+<script>
+window.onerror=function(m,s,l,c,e){var f=document.getElementById('fail');if(f){f.style.display='block';f.textContent='⚠ '+m+' @'+l+':'+c;}};
+</script>
+<script>
+(function(){
+  var cv=document.getElementById('bg'); if(!cv) return;
+  function fallback(){var c=cv.getContext&&cv.getContext('2d');if(!c)return;
+    function f(){var w=cv.width=innerWidth,h=cv.height=innerHeight;var g=c.createRadialGradient(w*.5,h*.42,0,w*.5,h*.42,Math.max(w,h)*.9);g.addColorStop(0,'#f9eef4');g.addColorStop(1,'#efdfe8');c.fillStyle=g;c.fillRect(0,0,w,h);}f();addEventListener('resize',f);}
+  var gl;try{gl=cv.getContext('webgl',{antialias:true,alpha:false})||cv.getContext('experimental-webgl');}catch(e){}
+  if(!gl){fallback();return;}
+  var spiral=[]; // one continuous groove
+  for(var i=0;i<2600;i++){var a=i*0.09,r=0.16+i*0.00030;if(r>0.94)break;var b=(i+1)*0.09,r2=0.16+(i+1)*0.00030;
+    spiral.push(Math.cos(a)*r,Math.sin(a)*r,Math.cos(b)*r2,Math.sin(b)*r2);}
+  var rim=[]; for(var i=0;i<96;i++){var a=i/96*6.283,b=(i+1)/96*6.283;rim.push(Math.cos(a)*0.96,Math.sin(a)*0.96,Math.cos(b)*0.96,Math.sin(b)*0.96);}
+  var label=[]; for(var i=0;i<48;i++){var a=i/48*6.283,b=(i+1)/48*6.283;label.push(Math.cos(a)*0.15,Math.sin(a)*0.15,Math.cos(b)*0.15,Math.sin(b)*0.15);}
+  label.push(0,0, 0.15,0); // the mark that shows rotation
+  function buf(a){var b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(a),gl.STATIC_DRAW);return b;}
+  var bS=buf(spiral),bR=buf(rim),bL=buf(label);
+  var VS='attribute vec2 p;uniform float asp,ang,sc,ox;void main(){float c=cos(ang),s=sin(ang);vec2 q=vec2(p.x*c-p.y*s,p.x*s+p.y*c);q*=sc;q.x+=ox;q.x/=asp;gl_Position=vec4(q,0.0,1.0);}';
+  var FS='precision mediump float;uniform vec3 col;uniform float a;void main(){gl_FragColor=vec4(col,a);}';
+  function sh(t,s){var o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(o);return o;}
+  var prog;try{prog=gl.createProgram();gl.attachShader(prog,sh(gl.VERTEX_SHADER,VS));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw'link';}catch(e){fallback();return;}
+  var uAsp=gl.getUniformLocation(prog,'asp'),uAng=gl.getUniformLocation(prog,'ang'),uSc=gl.getUniformLocation(prog,'sc'),uOx=gl.getUniformLocation(prog,'ox'),uCol=gl.getUniformLocation(prog,'col'),uA=gl.getUniformLocation(prog,'a'),aLoc=gl.getAttribLocation(prog,'p');
+  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  function draw(b,n,ang,col,al){gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.enableVertexAttribArray(aLoc);gl.vertexAttribPointer(aLoc,2,gl.FLOAT,false,0,0);
+    gl.uniform1f(uAsp,ASP);gl.uniform1f(uAng,ang);gl.uniform1f(uSc,0.62);gl.uniform1f(uOx,0.42);gl.uniform3f(uCol,col[0],col[1],col[2]);gl.uniform1f(uA,al);gl.lineWidth(1);gl.drawArrays(gl.LINES,0,n/2);}
+  var ASP=1,t0=null;
+  function frame(tm){requestAnimationFrame(frame);if(t0===null)t0=tm;var tt=(tm-t0)*0.001;
+    var w=cv.width=innerWidth,h=cv.height=innerHeight;gl.viewport(0,0,w,h);ASP=w/h;
+    gl.clearColor(0.972,0.945,0.960,1.0);gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(prog);
+    var ang=tt*0.6; // 33rpm-ish spin
+    draw(bS,spiral.length,ang,[0.91,0.35,0.63],0.12);
+    draw(bR,rim.length,ang,[0.76,0.24,0.50],0.18);
+    draw(bL,label.length,ang,[0.95,0.72,0.26],0.22);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+<script>
+(function(){
+  var cv=document.getElementById('stage'); var ctx=cv&&cv.getContext('2d'); if(!ctx)return;
+  var DPR=Math.min(window.devicePixelRatio||1,2);
+  function size(){var w=cv.clientWidth||900;cv.width=Math.round(w*DPR);cv.height=Math.round((w*440/900)*DPR);}
+  size(); addEventListener('resize',size);
+  var env={cv:cv,ctx:ctx,DPR:DPR,W:function(){return cv.width/DPR;},H:function(){return cv.height/DPR;},
+    set:function(id,val,cls){var e=document.getElementById(id);if(e){e.textContent=val;if(cls!=null)e.className='v '+cls;}},
+    evt:function(e){var r=cv.getBoundingClientRect();var sx=(cv.width/DPR)/r.width, sy=(cv.height/DPR)/r.height;
+      var cx=(e.touches?e.touches[0].clientX:e.clientX), cy=(e.touches?e.touches[0].clientY:e.clientY);
+      return {x:(cx-r.left)*sx, y:(cy-r.top)*sy};}};
+  var t0=null, inited=false;
+  function loop(t){requestAnimationFrame(loop);if(t0===null)t0=t;env.t=(t-t0)*0.001;
+    if(!inited&&window.__INST__){inited=true;if(window.__INST__.init)window.__INST__.init(env);}
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    if(window.__INST__&&window.__INST__.draw)window.__INST__.draw(env);}
+  requestAnimationFrame(loop);
+})();
+</script>
+<script>
+  function onDrag(env,pick,move){var handle=null;
+    function down(e){e.preventDefault();var p=env.evt(e);handle=pick(p);if(handle!=null)move(handle,p);}
+    function mv(e){if(handle==null)return;e.preventDefault();move(handle,env.evt(e));}
+    function up(){handle=null;}
+    env.cv.addEventListener('pointerdown',down);env.cv.addEventListener('pointermove',mv);
+    window.addEventListener('pointerup',up);env.cv.addEventListener('touchstart',down,{passive:false});env.cv.addEventListener('touchmove',mv,{passive:false});window.addEventListener('touchend',up);
+  }
+  var actx=null;
+  function AC(){try{if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return null;}if(actx&&actx.state==='suspended')actx.resume();return actx;}
+  function mtf(m){return 440*Math.pow(2,(m-69)/12);}
+  function tone(freq,t0,dur,gv,type){var a=AC();if(!a)return;var o=a.createOscillator(),g=a.createGain();o.type=type||'triangle';o.frequency.value=freq;
+    var t=a.currentTime+t0;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(0.0002,gv),t+0.015);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur+0.03);}
+  function chord(freqs,t0,dur,gv,type){for(var i=0;i<freqs.length;i++)tone(freqs[i],t0,dur,gv,type);}
+
+(function(){
+  var N=16, f0=110, a=[], ENV;
+  function setSaw(){for(var i=0;i<N;i++)a[i]=1/(i+1);}
+  function setSq(){for(var i=0;i<N;i++)a[i]=((i+1)%2)?1/(i+1):0;}
+  function setClar(){for(var i=0;i<N;i++)a[i]=((i+1)%2)?0.7/(i+1):0.03/(i+1);}
+  function setPure(){for(var i=0;i<N;i++)a[i]=0;a[0]=1;}
+  setSaw();
+  function bright(){var s=0,tot=0;for(var i=0;i<N;i++){s+=a[i]*(i+1);tot+=a[i];}return tot>0?s/tot:1;}
+  function nOn(){var k=0;for(var i=0;i<N;i++)if(a[i]>0.02)k++;return k;}
+  function refresh(){if(!ENV)return;ENV.set('roF0',f0+' Hz','c');ENV.set('roN',nOn()+' / '+N,'a');
+    var b=bright();ENV.set('roBright',b.toFixed(1)+'×','a');
+    ENV.set('roWave',nOn()<=1?'pure sine':(b>5?'bright / buzzy':(b>2.5?'reedy':'mellow')),nOn()<=1?'c':(b>5?'r':'g'));}
+  function play(){for(var i=0;i<N;i++)if(a[i]>0.02)tone((i+1)*f0,0,1.6,a[i]*0.4/Math.sqrt(nOn()||1),'sine');}
+  window.__INST__={init:function(env){ENV=env;
+    document.getElementById('play').onclick=play;
+    document.getElementById('saw').onclick=function(){setSaw();refresh();play();};
+    document.getElementById('sq').onclick=function(){setSq();refresh();play();};
+    document.getElementById('clar').onclick=function(){setClar();refresh();play();};
+    document.getElementById('pure').onclick=function(){setPure();refresh();play();};
+    document.getElementById('f0').oninput=function(){f0=+this.value;document.getElementById('f0v').textContent=f0;refresh();};
+    onDrag(env,function(p){var w=env.W();var bw=(w-70)/N;var i=Math.floor((p.x-40)/bw);return (i>=0&&i<N)?i:null;},
+      function(i,p){var h=env.H();a[i]=Math.max(0,Math.min(1,(h-46-p.y)/(h-90)));refresh();});
+    refresh();},
+   draw:function(env){var c=env.ctx,w=env.W(),h=env.H();c.clearRect(0,0,w,h);
+     var x0=40,y0=h-46,ph=h-90,bw=(w-70)/N;
+     // bars (draggable amplitudes)
+     for(var i=0;i<N;i++){var x=x0+i*bw,bh=a[i]*ph;
+       var grad=c.createLinearGradient(0,y0-bh,0,y0);grad.addColorStop(0,'#f26ab0');grad.addColorStop(1,'#c23d80');
+       c.fillStyle=a[i]>0.02?grad:'rgba(232,90,160,.12)';c.fillRect(x+2,y0-bh,bw-4,bh);
+       c.fillStyle='#8a7080';c.font='600 9px ui-monospace,monospace';c.textAlign='center';c.fillText((i+1),x+bw/2,y0+14);}
+     // summed waveform (one period)
+     var wy=h*0.24,wa=h*0.16;c.strokeStyle='#e0a52a';c.lineWidth=2;c.beginPath();
+     for(var px=0;px<=240;px++){var x=x0+px/240*(w-70),th=px/240*6.283,s=0;for(var i=0;i<N;i++)s+=a[i]*Math.sin((i+1)*th);
+       var y=wy-s*wa*0.34;px?c.lineTo(x,y):c.moveTo(x,y);}c.stroke();
+     c.fillStyle='#8a7080';c.font='600 10px ui-monospace,monospace';c.textAlign='left';c.fillText('drag bars = each overtone (n×f) · gold = the waveform they build',x0,20);
+   }};
+})();
+</script>
+</body></html>
