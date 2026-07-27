@@ -1,9 +1,9 @@
 ROOT0-DLW-CHAIN-v1
 index : 1548
 slug  : the-harmonic-series
-seal  : 2c0a0157094a878516dc7f252a8b56767c270b7e2636eec063f118a8369c11b4
-prev  : 99efc8b5f17a92229cef22a356cedf898f4d2aee3101642d136a6d780e26538c
-link  : 083c6c1c3567e472f0796013edde16d8eb1240a7ff1347ee3c0cd14930addc7b
-head  : 8f4ab365be9d995e7d8008d99458957d4accde2dda9fed639e129c1b62280ba7
+seal  : 4b9705b9cbeeabfd93ff08785d94bab8cdeb94fc3ae034c553d2ea8ed622ebd4
+prev  : 6251970657959b20a76b4303cfa9868d6d295df44100a90672465464a7cb63b3
+link  : 33bacfc779943f9285467a08dcfb098e7c860c9e707efbf6082cf3890d423f2b
+head  : c4d41afeaef76470528856d54d86cf480a0e1c2fc8ebc60fbb9eb8e442585f2b
 
 — the tether: link = sha256(index|slug|seal|prev). the chain head commits to the whole corpus.
